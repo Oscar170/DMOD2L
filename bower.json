@@ -1,0 +1,20 @@
+{
+  "name": "DMOD3L 'client'",
+  "description": "App para la creacion de avatares 2D en la web.",
+  "main": "",
+  "authors": [
+    "oviciana@gmail.com"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.3"
+  }
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>DMOD2L</title>
+    <meta charset="UTF-8" />
+    <meta name="application-name" content="DMOD3L" />
+    <meta name="description" content="Creacion de avatares 2D." />
+    <meta name="author" content="Oscar170" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href='https://fonts.googleapis.com/css?family=Averia+Sans+Libre:400,700' rel='stylesheet' type='text/css'>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script src="js/const.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/editor.js"></script>
+
+</head>
+
+<body>
+    <header id="cabezera">
+        <img src="img/DMODE3L.svg" height="100%"></img>
+        <span class="login-group">
+            <img src="img/twitter.svg" class="login" id="twitter" height="50px"></img>
+            <img src="img/github-circle.svg" class="login" id="github" height="50px"></img>
+            <img src="img/google.svg" class="login" id="google" height="50px"></img>
+        </span>
+    </header>
+    <nav id="menu">
+    </nav>
+    <div id="content">
+        <canvas id="grid" class="canvas"></canvas>
+        <canvas id="canvas" class="canvas"></canvas>
+        <canvas id="collision" class="canvas"></canvas>
+    </div>
+</body>
+
+</html>
