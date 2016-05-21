@@ -1,5 +1,6 @@
 var CustomMenu = {
   workingData: null,
+  itemId: null,
 
   getMenuModels: function() {
     newRef.on('value', function(val) {
@@ -20,16 +21,14 @@ var CustomMenu = {
 
     this.optionsModels();
     $('#new').click(function() {
-      edit = true;
       CustomMenu.newModel(true);
     });
   },
 
   optionsModels: function() {
     $('.item').click(function() {
+      CustomMenu.itemId = this.id;
       CustomMenu.newModel(false, this.id);
-      dmod2l.loadModel(CustomMenu.workingData[this.id]);
-      edit = true;
     });
   },
 
@@ -47,61 +46,158 @@ var CustomMenu = {
     $('#menu').empty();
     $('#menu').append('<div id="back" class="headList" style="text-align: center;">BACK</div>');
     if (refUser != 'Anonymous') {
-      $('#menu').append('<div id="Nombre" class="tool">Nombre</div>');
-      if(item != null) $('#menu').append('<input type="text" id="toolNombre" style="color: #000000;" value="'+item+'" class="oculto"/>');
-      else $('#menu').append('<input type="text" id="toolNombre" style="color: #000000;" value="Some Name" class="oculto"/>');
+      $('#menu').append('<div id="Nombre" class="button">NOMBRE</div>');
+      if (item != null) $('#menu').append('<input type="text" id="toolNombre" value="' + item + '" class="oculto"/>');
+      else $('#menu').append('<input type="text" id="toolNombre" value="Some Name" class="oculto"/>');
       $('#Nombre').click(function() {
-        if($('#toolNombre').hasClass('oculto')) $('#toolNombre').fadeIn("fast", function() {$('#toolNombre').removeClass('oculto')});
-        else $('#toolNombre').fadeOut("fast", function() {$('#toolNombre').addClass('oculto')});
+        if ($('#toolNombre').hasClass('oculto')) $('#toolNombre').fadeIn("fast", function() {
+          $('#toolNombre').removeClass('oculto')
+        });
+        else $('#toolNombre').fadeOut("fast", function() {
+          $('#toolNombre').addClass('oculto')
+        });
       });
     }
-    $('#menu').append('<div id="button" class="button"><input type="color" id="custom-color"/>Pick a color</div>');
+    $('#menu').append('<div id="button" class="button"><input type="color" id="custom-color"/>PICK COLOR</div>');
     input = document.getElementById("custom-color");
     button = document.getElementById("button");
     input.onchange = function() {
       button.style.backgroundColor = this.value;
       colores.colorActual = this.value;
-      colores.pilaColores[5] = colores.pilaColores[4];
-      $('#cs6').css('backgroundColor', colores.pilaColores[5]);
-      colores.pilaColores[4] = colores.pilaColores[3];
-      $('#cs5').css('backgroundColor', colores.pilaColores[4]);
-      colores.pilaColores[3] = colores.pilaColores[2];
-      $('#cs4').css('backgroundColor', colores.pilaColores[3]);
-      colores.pilaColores[2] = colores.pilaColores[1];
-      $('#cs3').css('backgroundColor', colores.pilaColores[2]);
-      colores.pilaColores[1] = colores.pilaColores[0];
-      $('#cs2').css('backgroundColor', colores.pilaColores[1]);
-      colores.pilaColores[0] = colores.colorActual;
-      $('#cs1').css('backgroundColor', colores.pilaColores[0]);
     }
-    $('#menu').append('<div id="cs1" class="buttonColor">Color 1#</div>');
-    $('#menu').append('<div id="cs2" class="buttonColor">Color 2#</div>');
-    $('#menu').append('<div id="cs3" class="buttonColor">Color 3#</div>');
-    $('#menu').append('<div id="cs4" class="buttonColor">Color 4#</div>');
-    $('#menu').append('<div id="cs5" class="buttonColor">Color 5#</div>');
-    $('#menu').append('<div id="cs6" class="buttonColor">Color 6#</div>');
-    $('#menu').append('<div id="clear" class="button">LIMPIAR</div>');
+    $('#menu').append('<div id="clear" class="button">LIMPIAR PIXEL</div>');
     $('#menu').append('<div id="mode" class="button">CAMBIAR MODO</div>');
-    $('#menu').append('<div id="guardar">GUARDAR</div>');
+    $('#menu').append('<div id="animacion" class="button">ANIMACIONES</div>');
+
+    if (item != null) {
+      for (var n = 0; n < CustomMenu.workingData[item][0].length; n++) {
+        $('#menu').append('<div id="' + n + '" class="button ocultoAnimacion animation">Animacion ' + n + '</div>');
+        for (var l = 0; l < CustomMenu.workingData[item][0][n].length; l++) {
+          $('#menu').append('<div id="A' + n + 'S' + l +
+            '" class="button ocultoAnimacion bind sprites' +
+            n + ' ocultoSprite' + n + '">Sprite ' + l + '</div>');
+
+          $('.bind').unbind();
+          $('.bind').click(function() {
+            var aux = $(this).attr('id').split('');
+            refToModel = [aux[1], aux[3]];
+            dmod2l.clearAll();
+            dmod2l.loadModel(CustomMenu.workingData[CustomMenu.itemId]);
+            edit = true;
+          });
+        }
+        $('#menu').append('<div id="s' + n + '" class="button ocultoAnimacion addSprite ocultoSprite' + n + '">NUEVO SPRITE</div>');
+
+        $('.addSprite').unbind();
+        $('.addSprite').click(function() {
+          $(this).before('<div id="A' + ($(this).attr('id').split('')[1]) + 'S' +
+            $('.sprite' + $(this).attr('id')).size() +
+            '" class="button ocultoAnimacion bind sprite' +
+            $(this).attr('id') +
+            ' ocultoSprite' +
+            ($(this).attr('id').split('')[1]) + '">Sprite ' + $('.sprite' + $(this).attr('id')).size() + '</div>');
+          $('.bind').unbind();
+          $('.bind').click(function() {
+            var aux = $(this).attr('id').split('');
+            refToModel = [aux[1], aux[3]];
+            dmod2l.clearAll();
+            dmod2l.loadModel(CustomMenu.workingData[CustomMenu.itemId]);
+            edit = true;
+          });
+        });
+      }
+    }
+    $('#menu').append('<div id="nuevaAnimacion" class="button ocultoAnimacion">NUEVA ANIMACION</div>');
+
+    $('#menu').append('<div id="guardar" class="button">GUARDAR</div>');
     $('.oculto').fadeOut('fast');
+    $('.ocultoAnimacion').fadeOut('fast');
     $('.oculto').prop('data-estado', true);
+
     this.toggleTools();
+    $('.animation').unbind();
+    $('.animation').click(function() {
+      if ($('.ocultoSprite' + $(this).attr('id')).is(':visible')) $('.ocultoSprite' + $(this).attr('id')).fadeOut("fast");
+      else $('.ocultoSprite' + $(this).attr('id')).fadeIn("fast");
+    });
+
+
     $('#back').click(function() {
+      CustomMenu.itemId = null;
+      refToModel = [];
       edit = false;
       model = {};
       modelCollision = {};
       dmod2l.clearAll();
       CustomMenu.genMenuModels();
+      dmod2l.mode = 'draw';
     });
-    $('#mode').click(function(){
-      if(dmod2l.mode == 'draw') $('#collision').fadeIn('fast', function(){dmod2l.mode = 'coll'});
-      else $('#collision').fadeOut('fast', function(){dmod2l.mode = 'draw'});
+
+    $('#animacion').click(function() {
+      if ($('.ocultoAnimacion').is(':visible')) $('.ocultoAnimacion').fadeOut("fast");
+      else $('.ocultoAnimacion').fadeIn("fast");
     });
+
+    $('#nuevaAnimacion').click(function() {
+      $(this).before('<div id="' + $('.animation').size() + '" class="button ocultoAnimacion animation">Animacion ' + $('.animation').size() + '</div>');
+      $('#' + ($('.animation').size() - 1)).after('<div id="s' + ($('.animation').size() - 1) + '" class="button ocultoAnimacion addSprite ocultoSprite' + ($('.animation').size() - 1) + '">NUEVO SPRITE</div>');
+      $('.ocultoSprite' + ($('.animation').size() - 1)).fadeOut('fast');
+      $('#animacion').unbind();
+      $('#animacion').click(function() {
+        if ($('.ocultoAnimacion').is(':visible')) $('.ocultoAnimacion').fadeOut("fast");
+        else $('.ocultoAnimacion').fadeIn("fast");
+      });
+      $('.animation').unbind();
+      $('.animation').click(function() {
+        if ($('.ocultoSprite' + $(this).attr('id')).is(':visible')) $('.ocultoSprite' + $(this).attr('id')).fadeOut("fast");
+        else $('.ocultoSprite' + $(this).attr('id')).fadeIn("fast");
+      });
+      $('.addSprite').unbind();
+      $('.addSprite').click(function() {
+        $(this).before('<div id="A' + ($(this).attr('id').split('')[1]) + 'S' +
+          $('.sprite' + $(this).attr('id')).size() +
+          '" class="button ocultoAnimacion bind sprite' +
+          $(this).attr('id') +
+          ' ocultoSprite' +
+          ($(this).attr('id').split('')[1]) + '">Sprite ' + $('.sprite' + $(this).attr('id')).size() + '</div>');
+
+        $('.bind').unbind();
+        $('.bind').click(function() {
+          var aux = $(this).attr('id').split('');
+          refToModel = [aux[1], aux[3]];
+          dmod2l.clearAll();
+          dmod2l.loadModel(CustomMenu.workingData[CustomMenu.itemId]);
+          edit = true;
+        });
+      });
+    });
+
+    $('#clear').click(function() {
+      if (dmod2l.mode == 'draw') dmod2l.mode = 'clear';
+      else if (dmod2l.mode == 'coll') $('#collision').fadeOut('fast', function() {
+        dmod2l.mode = 'clear'
+      });
+      else if (dmod2l.mode == 'clear') dmod2l.mode = 'draw';
+    });
+
+    $('#mode').click(function() {
+      if (dmod2l.mode == 'draw') $('#collision').fadeIn('fast', function() {
+        dmod2l.mode = 'coll';
+      });
+      else if (dmod2l.mode == 'clear') $('#collision').fadeIn('fast', function() {
+        dmod2l.mode = 'coll';
+      });
+      else if (dmod2l.mode == 'coll') $('#collision').fadeOut('fast', function() {
+        dmod2l.mode = 'draw';
+      });
+    });
+
     $('#guardar').click(function() {
       edit = false;
       dmod2l.clearAll();
       CustomMenu.saveData(n);
     });
+
   },
 
   saveData: function(isNew) {
